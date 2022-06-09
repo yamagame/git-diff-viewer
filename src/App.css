@@ -1,3 +1,7 @@
+:root {
+  --diff-line-padding: 3px;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +39,66 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+pre {
+  margin: 0;
+  padding: 0;
+}
+
+.diff-container {
+  margin: 10px;
+  font-size: 0.8em;
+}
+
+.diff-file {
+  margin-bottom: 10px;
+  border: solid 1px lightgray;
+}
+
+.diff-header {
+  display: flex;
+  color: white;
+  background-color: #00a1ffff;
+  padding: var(--diff-line-padding);
+}
+
+.diff-column {
+  display: inline-block;
+  flex: 1;
+}
+
+.diff-hunk {
+  display: flex;
+  border-bottom: solid 1px lightgray;
+}
+
+.diff-normal {
+  flex: 1;
+  display: inline-block;
+  line-height: 1;
+  padding: var(--diff-line-padding);
+  overflow: clip;
+}
+
+.diff-insert {
+  flex: 1;
+  display: inline-block;
+  color: blue;
+  line-height: 1;
+  padding: var(--diff-line-padding);
+  overflow: clip;
+}
+
+.diff-delete {
+  flex: 1;
+  display: inline-block;
+  color: red;
+  line-height: 1;
+  padding: var(--diff-line-padding);
+  overflow: clip;
+}
+
+.diff-left {
+  border-right: solid 1px lightgray;
 }

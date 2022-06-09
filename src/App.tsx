@@ -1,24 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import parse, { File } from "gitdiff-parser";
+import { sampleDiff } from "./sample";
+import { DiffFile } from "./components/DiffFile";
 
 function App() {
+  const [diff, setDiff] = React.useState(sampleDiff);
+  const [diffInfo, setDiffInfo] = React.useState<File[] | null>(null);
+
+  const onUpdateDiff = (value: string) => {
+    setDiff(value);
+  };
+
+  React.useEffect(() => {
+    const info = parse.parse(diff);
+    setDiffInfo(info);
+  }, [diff]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="diff-container">
+      <textarea value={diff} onChange={(e) => onUpdateDiff(e.target.value)} />
+      {diffInfo && diffInfo.map((file, idx) => <DiffFile key={`${idx}`} file={file} />)}
     </div>
   );
 }
