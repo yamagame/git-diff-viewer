@@ -1,8 +1,17 @@
 import { File } from "gitdiff-parser";
-import { DiffHunk } from "./DiffHunk";
+import { DiffHunk, hunkToDiff } from "./DiffHunk";
 
 export type DiffFileProps = {
   file: File;
+};
+
+export const fileToDiff = (file: File) => {
+  return {
+    ...file,
+    hunks: file.hunks.map((hunk) => {
+      return hunkToDiff(hunk);
+    }),
+  };
 };
 
 export function DiffFile(props: DiffFileProps) {

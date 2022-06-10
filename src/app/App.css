@@ -116,3 +116,8 @@ pre {
 .diff-left {
   border-right: solid 1px lightgray;
 }
+
+.diff-button {
+  outline: none; 
+  float: right;
+}

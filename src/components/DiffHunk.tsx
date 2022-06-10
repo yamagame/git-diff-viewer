@@ -9,7 +9,7 @@ type ZipSplitChange = {
   new: Change | null;
 };
 
-const zipChanges = (changes: Change[]) => {
+export const zipChanges = (changes: Change[]) => {
   const [result] = changes.reduce(
     ([result, last, lastDeletionIndex], current, i) => {
       if (!last) {
@@ -29,7 +29,7 @@ const zipChanges = (changes: Change[]) => {
   return result;
 };
 
-const splitChanges = (changes: Change[]) => {
+export const splitChanges = (changes: Change[]) => {
   const result: ZipSplitChange[] = [];
   changes.forEach((change, idx) => {
     if (change.isNormal) {
@@ -50,6 +50,10 @@ const splitChanges = (changes: Change[]) => {
     }
     return v;
   });
+};
+
+export const hunkToDiff = (hunk: Hunk) => {
+  return splitChanges(zipChanges(hunk.changes));
 };
 
 export type DiffHunkProps = {
