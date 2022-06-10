@@ -11,6 +11,7 @@ export function DiffFile(props: DiffFileProps) {
   return (
     <div className="diff-file">
       <div className="diff-header">
+        <div className="diff-state"></div>
         <div className="diff-column">
           <span>{file.oldPath}</span>
         </div>

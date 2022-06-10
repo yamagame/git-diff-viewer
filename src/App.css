@@ -104,6 +104,15 @@ pre {
   overflow: clip;
 }
 
+.diff-state {
+  width: 17px;
+  display: inline-block;
+  color: #F88;
+  line-height: 1;
+  padding: var(--diff-line-padding);
+  overflow: clip;
+}
+
 .diff-left {
   border-right: solid 1px lightgray;
 }

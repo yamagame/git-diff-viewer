@@ -3,7 +3,11 @@ import { Hunk, Change } from "gitdiff-parser";
 import { DiffChange } from "./DiffChange";
 
 type ZipChange = [Change[], Change | null, number];
-type ZipSplitChange = [Change | null, Change | null];
+type ZipSplitChange = {
+  type: "normal" | "delete" | "insert";
+  old: Change | null;
+  new: Change | null;
+};
 
 const zipChanges = (changes: Change[]) => {
   const [result] = changes.reduce(
@@ -29,18 +33,23 @@ const splitChanges = (changes: Change[]) => {
   const result: ZipSplitChange[] = [];
   changes.forEach((change, idx) => {
     if (change.isNormal) {
-      result.push([change, change]);
+      result.push({ type: "normal", old: change, new: change });
     } else if (change.isDelete) {
-      result.push([change, null]);
+      result.push({ type: "delete", old: change, new: null });
     } else if (change.isInsert) {
       if (idx > 0 && changes[idx - 1].isDelete) {
-        result[result.length - 1][1] = change;
+        result[result.length - 1].new = change;
       } else {
-        result.push([null, change]);
+        result.push({ type: "insert", old: null, new: change });
       }
     }
   });
-  return result;
+  return result.map(v => {
+    if (v.old?.content.trim() === v.new?.content.trim()) {
+      v.type = "normal";
+    }
+    return v;
+  });
 };
 
 export type DiffHunkProps = {
@@ -58,10 +67,13 @@ export function DiffHunk(props: DiffHunkProps) {
   return (
     <>
       {changes.map((change, idx) => {
+        const oldType = change.type === "normal" ? "normal" : change.old?.type || "normal";
+        const newType = change.type === "normal" ? "normal" : change.new?.type || "normal";
         return (
           <div key={`${idx}`} className="diff-hunk">
-            <DiffChange key={`old-${idx}`} change={change[0]} />
-            <DiffChange key={`new-${idx}`} change={change[1]} />
+            <div className="diff-state diff-left">{change.type !== "normal" ? "NG" : ""}</div>
+            <DiffChange key={`old-${idx}`} change={change.old} type={oldType} />
+            <DiffChange key={`new-${idx}`} change={change.new} type={newType} />
           </div>
         );
       })}

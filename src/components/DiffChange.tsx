@@ -2,13 +2,14 @@ import { Change } from "gitdiff-parser";
 
 export type DiffChangeProps = {
   change: Change | null;
+  type: "normal" | "delete" | "insert";
 };
 
 export function DiffChange(props: DiffChangeProps) {
-  const { change } = props;
+  const { change, type } = props;
   if (change) {
     return (
-      <pre className={`diff-${change.type} diff-left`}>
+      <pre className={`diff-${type} diff-left`}>
         <code>{change.content} </code>
       </pre>
     );
