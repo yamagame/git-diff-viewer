@@ -19,7 +19,11 @@ function App() {
 
   return (
     <div className="diff-container">
-      <textarea value={diff} onChange={(e) => onUpdateDiff(e.target.value)} />
+      <textarea
+        className="diff-textarea"
+        value={diff}
+        onChange={(e) => onUpdateDiff(e.target.value)}
+      />
       {diffInfo && diffInfo.map((file, idx) => <DiffFile key={`${idx}`} file={file} />)}
     </div>
   );

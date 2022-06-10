@@ -46,6 +46,11 @@ pre {
   padding: 0;
 }
 
+.diff-textarea {
+  width: 50%;
+  height: 20px;
+}
+
 .diff-container {
   margin: 10px;
   font-size: 0.8em;
