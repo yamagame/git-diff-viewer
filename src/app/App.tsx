@@ -59,7 +59,7 @@ function App() {
           }
         }}
       >
-        コピー
+        Copy to Clipboard
       </button>
       {diffInfo && diffInfo.map((file, idx) => <DiffFile key={`${idx}`} file={file} />)}
     </div>
