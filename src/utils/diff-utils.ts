@@ -32,7 +32,7 @@ export function diffFilesToArray(diffFiles: File[]) {
       return sum;
     },
     [
-      [{ value: "" }, { value: `${now.toLocaleDateString()} ${now.toTimeString()}` }],
+      // [{ value: "" }, { value: `${now.toLocaleDateString()} ${now.toTimeString()}` }],
     ] as CSV.Item[][]
   );
 }
