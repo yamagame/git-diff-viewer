@@ -19,30 +19,34 @@ function App() {
   }, [diff]);
 
   return (
-    <div className="diff-container">
-      <textarea
-        className="diff-textarea"
-        value={diff}
-        onChange={(e) => onUpdateDiff(e.target.value)}
-      />
-      <button
-        className="diff-button"
-        onClick={() => {
-          if (diffFiles) copyToClipboard(diffFiles);
-        }}
-      >
-        Copy to Clipboard
-      </button>
-      <button
-        className="diff-button"
-        onClick={() => {
-          if (diffFiles) downloadText("git-diff.html", diffFilesToHTML(diffFiles));
-        }}
-      >
-        Download HTML
-      </button>
-      {diffFiles && diffFiles.map((file, idx) => <DiffFile key={`${idx}`} file={file} />)}
-    </div>
+    <>
+      <div className="diff-top-header">
+        <textarea
+          className="diff-textarea"
+          value={diff}
+          onChange={(e) => onUpdateDiff(e.target.value)}
+        />
+        <button
+          className="diff-button"
+          onClick={() => {
+            if (diffFiles) copyToClipboard(diffFiles);
+          }}
+        >
+          Copy to Clipboard
+        </button>
+        <button
+          className="diff-button"
+          onClick={() => {
+            if (diffFiles) downloadText("git-diff.html", diffFilesToHTML(diffFiles));
+          }}
+        >
+          Download HTML
+        </button>
+      </div>
+      <div className="diff-container">
+        {diffFiles && diffFiles.map((file, idx) => <DiffFile key={`${idx}`} file={file} />)}
+      </div>
+    </>
   );
 }
 

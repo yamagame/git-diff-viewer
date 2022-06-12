@@ -116,3 +116,13 @@ pre {
   padding: 0;
   margin: 0;
 }
+
+.diff-top-header {
+  height: 24px;
+  top: 0;
+  padding: 4px 10px 6px 10px;
+  font-size: 0.7em;
+  position: sticky;
+  background-color: white;
+  border-bottom: solid 1px lightgray;
+}
