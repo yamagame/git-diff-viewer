@@ -1,5 +1,9 @@
 :root {
   --diff-line-padding: 2px;
+  --diff-delete-color: white;
+  --diff-delete-bg-color: #F66;
+  --diff-insert-color: white;
+  --diff-insert-bg-color: #66F;
 }
 
 pre {
@@ -50,7 +54,8 @@ pre {
 .diff-insert {
   flex: 1;
   display: inline-block;
-  color: blue;
+  color: var(--diff-insert-color);
+  background-color: var(--diff-insert-bg-color);
   line-height: 1;
   padding: var(--diff-line-padding);
   overflow: clip;
@@ -59,7 +64,8 @@ pre {
 .diff-delete {
   flex: 1;
   display: inline-block;
-  color: red;
+  color: var(--diff-delete-color);
+  background-color: var(--diff-delete-bg-color);
   line-height: 1;
   padding: var(--diff-line-padding);
   overflow: clip;
@@ -81,4 +87,32 @@ pre {
 .diff-button {
   outline: none; 
   float: right;
+}
+
+.diff-code-normal {
+  flex: 1;
+  display: inline-block;
+  line-height: 1;
+  padding: var(--diff-line-padding);
+  overflow: clip;
+}
+
+.diff-code {
+  display: inline;
+  padding: 0;
+  margin: 0;
+}
+
+.diff-code-added {
+  color: var(--diff-insert-color);
+  background-color: var(--diff-insert-bg-color);
+  padding: 0;
+  margin: 0;
+}
+
+.diff-code-removed {
+  color: var(--diff-delete-color);
+  background-color: var(--diff-delete-bg-color);
+  padding: 0;
+  margin: 0;
 }

@@ -60,6 +60,10 @@ code {
 
 :root {
   --diff-line-padding: 2px;
+  --diff-delete-color: white;
+  --diff-delete-bg-color: #F66;
+  --diff-insert-color: white;
+  --diff-insert-bg-color: #66F;
 }
 
 pre {
@@ -110,7 +114,8 @@ pre {
 .diff-insert {
   flex: 1;
   display: inline-block;
-  color: blue;
+  color: var(--diff-insert-color);
+  background-color: var(--diff-insert-bg-color);
   line-height: 1;
   padding: var(--diff-line-padding);
   overflow: clip;
@@ -119,7 +124,8 @@ pre {
 .diff-delete {
   flex: 1;
   display: inline-block;
-  color: red;
+  color: var(--diff-delete-color);
+  background-color: var(--diff-delete-bg-color);
   line-height: 1;
   padding: var(--diff-line-padding);
   overflow: clip;
@@ -142,6 +148,34 @@ pre {
   outline: none; 
   float: right;
 }
+
+.diff-code-normal {
+  flex: 1;
+  display: inline-block;
+  line-height: 1;
+  padding: var(--diff-line-padding);
+  overflow: clip;
+}
+
+.diff-code {
+  display: inline;
+  padding: 0;
+  margin: 0;
+}
+
+.diff-code-added {
+  color: var(--diff-insert-color);
+  background-color: var(--diff-insert-bg-color);
+  padding: 0;
+  margin: 0;
+}
+
+.diff-code-removed {
+  color: var(--diff-delete-color);
+  background-color: var(--diff-delete-bg-color);
+  padding: 0;
+  margin: 0;
+}
 </style>
 </head>
 <body>
@@ -152,12 +186,33 @@ const htmlFooter = `
 </html>
 `;
 
+function escapeHTML(html: string) {
+  var elem = document.createElement("div");
+  elem.appendChild(document.createTextNode(html));
+  return elem.innerHTML;
+}
+
+const diffToHtml = (content: Diff.Change[]) => {
+  let r = [];
+  r.push(`<pre class="diff-code-normal diff-left">`);
+  let t = "";
+  content.forEach((v) => {
+    if (v.added) {
+      t += `<span class="diff-code-added">${escapeHTML(v.value)}</span>`;
+      return;
+    }
+    if (v.removed) {
+      t += `<span class="diff-code-removed">${escapeHTML(v.value)}</span>`;
+      return;
+    }
+    t += `<span>${escapeHTML(v.value)}</span>`;
+  });
+  r.push(`<code class="diff-code">${t}</code>`);
+  r.push(`</pre>`);
+  return r.join("\n");
+};
+
 export function diffFilesToHTML(diffFiles: File[]) {
-  function escapeHTML(html: string) {
-    var elem = document.createElement("div");
-    elem.appendChild(document.createTextNode(html));
-    return elem.innerHTML;
-  }
   const files = diffFiles.map((file) => fileToDiff(file));
   const bodyHtml = files.reduce((sum, file) => {
     const r = [];
@@ -170,19 +225,48 @@ export function diffFilesToHTML(diffFiles: File[]) {
     r.push(`<div>`);
     file.hunks.forEach((hunk) => {
       hunk.forEach((change) => {
-        const type = change.type !== "normal" ? "NG" : "";
         r.push(`<div class="diff-hunk">`);
+        const type = change.type !== "normal" ? "NG" : "";
         r.push(`<div class="diff-state diff-left">${escapeHTML(type)}</div>`);
-        r.push(
-          `<pre class="diff-delete diff-left"><code>${escapeHTML(
-            change.old?.content || " "
-          )}</code></pre>`
-        );
-        r.push(
-          `<pre class="diff-insert diff-left"><code>${escapeHTML(
-            change.new?.content || " "
-          )}</code></pre>`
-        );
+        if (type === "NG") {
+          const oldContent = change.diff
+            ? change.diff.filter((v) => !v.added)
+            : change.old?.content || "";
+          const newContent = change.diff
+            ? change.diff.filter((v) => !v.removed)
+            : change.new?.content || "";
+          if (typeof oldContent === "string") {
+            if (oldContent === "") {
+              r.push(
+                `<pre class="diff-normal diff-left"><code>${escapeHTML(oldContent)}</code></pre>`
+              );
+            } else {
+              r.push(
+                `<pre class="diff-delete diff-left"><code>${escapeHTML(oldContent)}</code></pre>`
+              );
+            }
+          } else {
+            r.push(diffToHtml(oldContent));
+          }
+          if (typeof newContent === "string") {
+            if (newContent === "") {
+              r.push(
+                `<pre class="diff-normal diff-left"><code>${escapeHTML(newContent)}</code></pre>`
+              );
+            } else {
+              r.push(
+                `<pre class="diff-insert diff-left"><code>${escapeHTML(newContent)}</code></pre>`
+              );
+            }
+          } else {
+            r.push(diffToHtml(newContent));
+          }
+        } else {
+          const oldContent = change.old?.content || " ";
+          const newContent = change.new?.content || " ";
+          r.push(`<pre class="diff-normal diff-left"><code>${escapeHTML(oldContent)}</code></pre>`);
+          r.push(`<pre class="diff-normal diff-left"><code>${escapeHTML(newContent)}</code></pre>`);
+        }
         r.push(`</div>`);
       });
     });

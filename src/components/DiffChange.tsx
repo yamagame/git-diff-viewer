@@ -1,16 +1,32 @@
-import { Change } from "gitdiff-parser";
+import * as Diff from "diff";
 
 export type DiffChangeProps = {
-  change: Change | null;
+  content: string | Diff.Change[];
   type: "normal" | "delete" | "insert";
 };
 
 export function DiffChange(props: DiffChangeProps) {
-  const { change, type } = props;
-  if (change) {
+  const { content, type } = props;
+  if (typeof content === "string") {
     return (
       <pre className={`diff-${type} diff-left`}>
-        <code>{change.content} </code>
+        <code>{content} </code>
+      </pre>
+    );
+  } else if (content) {
+    return (
+      <pre className={`diff-code-normal diff-left`}>
+        <code className="diff-code">
+          {content.map((v) => {
+            if (v.added) {
+              return <span className="diff-code-added">{v.value}</span>;
+            }
+            if (v.removed) {
+              return <span className="diff-code-removed">{v.value}</span>;
+            }
+            return <span>{v.value}</span>;
+          })}
+        </code>
       </pre>
     );
   }

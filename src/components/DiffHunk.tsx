@@ -1,12 +1,14 @@
 import React from "react";
 import { Hunk, Change } from "gitdiff-parser";
 import { DiffChange } from "./DiffChange";
+import * as Diff from "diff";
 
 type ZipChange = [Change[], Change | null, number];
 type ZipSplitChange = {
   type: "normal" | "delete" | "insert";
   old: Change | null;
   new: Change | null;
+  diff?: Diff.Change[];
 };
 
 export const zipChanges = (changes: Change[]) => {
@@ -38,13 +40,15 @@ export const splitChanges = (changes: Change[]) => {
       result.push({ type: "delete", old: change, new: null });
     } else if (change.isInsert) {
       if (idx > 0 && changes[idx - 1].isDelete) {
-        result[result.length - 1].new = change;
+        const changes = result[result.length - 1];
+        changes.new = change;
+        changes.diff = Diff.diffChars(changes.old?.content || "", changes.new?.content || "");
       } else {
         result.push({ type: "insert", old: null, new: change });
       }
     }
   });
-  return result.map(v => {
+  return result.map((v) => {
     if (v.old?.content.trim() === v.new?.content.trim()) {
       v.type = "normal";
     }
@@ -73,11 +77,17 @@ export function DiffHunk(props: DiffHunkProps) {
       {changes.map((change, idx) => {
         const oldType = change.type === "normal" ? "normal" : change.old?.type || "normal";
         const newType = change.type === "normal" ? "normal" : change.new?.type || "normal";
+        const oldContent = change.diff
+          ? change.diff.filter((v) => !v.added)
+          : change.old?.content || "";
+        const newContent = change.diff
+          ? change.diff.filter((v) => !v.removed)
+          : change.new?.content || "";
         return (
           <div key={`${idx}`} className="diff-hunk">
             <div className="diff-state diff-left">{change.type !== "normal" ? "NG" : ""}</div>
-            <DiffChange key={`old-${idx}`} change={change.old} type={oldType} />
-            <DiffChange key={`new-${idx}`} change={change.new} type={newType} />
+            <DiffChange key={`old-${idx}`} content={oldContent} type={oldType} />
+            <DiffChange key={`new-${idx}`} content={newContent} type={newType} />
           </div>
         );
       })}
