@@ -62,9 +62,10 @@ git log --oneline
 git diff 9802941f:<path(old)> 428ddb68:<path(new)>
 ```
 
-### リモート名（例:origin）をつけて比較
+### リモート名をつけて比較
 
 ```bash
+# 比較例（リモート名の例:origin）
 git diff origin/topic:<path(old)> origin/master:<path(new)>
 ```
 
