@@ -34,6 +34,7 @@ git branch
 ```
 
 ```bash
+# 比較例
 git diff topic:<path(old)> master:<path(new)>
 ```
 
@@ -45,6 +46,7 @@ git tag
 ```
 
 ```bash
+# 比較例
 git diff v1.0.0:<path(old)> v2.0.0:<path(new)>
 ```
 
@@ -56,6 +58,7 @@ git log --oneline
 ```
 
 ```bash
+# 比較例
 git diff 9802941f:<path(old)> 428ddb68:<path(new)>
 ```
 
