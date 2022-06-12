@@ -17,14 +17,22 @@ export function DiffChange(props: DiffChangeProps) {
     return (
       <pre className={`diff-code-normal diff-left`}>
         <code className="diff-code">
-          {content.map((v) => {
+          {content.map((v, i) => {
             if (v.added) {
-              return <span className="diff-code-added">{v.value}</span>;
+              return (
+                <span key={i} className="diff-code-added">
+                  {v.value}
+                </span>
+              );
             }
             if (v.removed) {
-              return <span className="diff-code-removed">{v.value}</span>;
+              return (
+                <span key={i} className="diff-code-removed">
+                  {v.value}
+                </span>
+              );
             }
-            return <span>{v.value}</span>;
+            return <span key={i}>{v.value}</span>;
           })}
         </code>
       </pre>
