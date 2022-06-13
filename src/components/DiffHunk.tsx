@@ -42,7 +42,11 @@ export const splitChanges = (changes: Change[]) => {
       if (idx > 0 && changes[idx - 1].isDelete) {
         const changes = result[result.length - 1];
         changes.new = change;
-        changes.diff = Diff.diffChars(changes.old?.content || "", changes.new?.content || "");
+        const oldString = changes.old?.content || "";
+        const newString = changes.new?.content || "";
+        if (oldString.length <= 256 || newString.length <= 256) {
+          changes.diff = Diff.diffChars(oldString, newString);
+        }
       } else {
         result.push({ type: "insert", old: null, new: change });
       }
