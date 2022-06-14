@@ -22,6 +22,7 @@ function App() {
     <>
       <div className="diff-top-header">
         <textarea
+          placeholder="Paste the git diff here."
           className="diff-textarea"
           value={diff}
           onChange={(e) => onUpdateDiff(e.target.value)}
@@ -41,6 +42,14 @@ function App() {
           }}
         >
           Download HTML
+        </button>
+        <button
+          className="diff-margin-button"
+          onClick={() => {
+            setDiff("");
+          }}
+        >
+          Clear
         </button>
       </div>
       <div className="diff-container">

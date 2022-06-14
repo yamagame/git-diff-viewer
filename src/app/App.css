@@ -89,6 +89,12 @@ pre {
   float: right;
 }
 
+.diff-margin-button {
+  margin-right: 10px;
+  outline: none; 
+  float: right;
+}
+
 .diff-code-normal {
   flex: 1;
   display: inline-block;
