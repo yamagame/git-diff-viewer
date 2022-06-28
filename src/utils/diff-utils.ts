@@ -13,17 +13,23 @@ export function downloadText(fileName: string, text: string) {
 }
 
 export function diffFilesToArray(diffFiles: File[]) {
-  const now = new Date();
+  // const now = new Date();
   const files = diffFiles.map((file) => fileToDiff(file));
   return files.reduce(
     (sum, file) => {
-      sum.push([{ value: "#" }, { value: `${file.oldPath}` }, { value: `${file.newPath}` }]);
+      sum.push([
+        { value: "#" },
+        { value: `${file.oldPath}` },
+        { value: "" },
+        { value: `${file.newPath}` },
+      ]);
       file.hunks.forEach((hunk) => {
         hunk.forEach((change) => {
           const type = change.type !== "normal" ? "NG" : "";
           const r = [];
           r.push({ value: type });
           r.push({ value: change.old?.content || "" });
+          r.push({ value: "" });
           r.push({ value: change.new?.content || "" });
           sum.push(r);
         });
