@@ -132,3 +132,21 @@ pre {
   background-color: white;
   border-bottom: solid 1px lightgray;
 }
+
+.diff-margin-section {
+  margin-right: 15px;
+  outline: none; 
+  float: right;
+}
+
+.diff-radio {
+  float: right;
+  margin: 3px 0px 0px 8px;
+  height: 16px;
+}
+
+.diff-radio-label {
+  float: right;
+  clear: none;
+  margin: 4px 0 0 2px;
+}

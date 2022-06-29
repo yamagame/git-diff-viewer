@@ -1,5 +1,5 @@
 import { File } from "gitdiff-parser";
-import { fileToDiff } from "components/DiffFile";
+import { fileToDiff, DiffType } from "components/DiffFile";
 import * as CSV from "utils/csv-parser";
 
 export function downloadText(fileName: string, text: string) {
@@ -12,9 +12,9 @@ export function downloadText(fileName: string, text: string) {
   URL.revokeObjectURL(aTag.href);
 }
 
-export function diffFilesToArray(diffFiles: File[]) {
+export function diffFilesToArray(diffFiles: File[], diffType: DiffType) {
   // const now = new Date();
-  const files = diffFiles.map((file) => fileToDiff(file));
+  const files = diffFiles.map((file) => fileToDiff(file, diffType));
   return files.reduce(
     (sum, file) => {
       sum.push([
@@ -43,8 +43,8 @@ export function diffFilesToArray(diffFiles: File[]) {
   );
 }
 
-export function copyToClipboard(diffFiles: File[]) {
-  navigator.clipboard.writeText(CSV.stringify(diffFilesToArray(diffFiles)));
+export function copyToClipboard(diffFiles: File[], diffType: DiffType) {
+  navigator.clipboard.writeText(CSV.stringify(diffFilesToArray(diffFiles, diffType)));
 }
 
 const htmlHeader = `<!DOCTYPE html><html lang="en">
@@ -218,8 +218,8 @@ const diffToHtml = (content: Diff.Change[]) => {
   return r.join("\n");
 };
 
-export function diffFilesToHTML(diffFiles: File[]) {
-  const files = diffFiles.map((file) => fileToDiff(file));
+export function diffFilesToHTML(diffFiles: File[], diffType: DiffType) {
+  const files = diffFiles.map((file) => fileToDiff(file, diffType));
   const bodyHtml = files.reduce((sum, file) => {
     const r = [];
     r.push(`<div class="diff-file">`);

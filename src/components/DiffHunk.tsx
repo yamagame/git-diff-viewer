@@ -1,6 +1,7 @@
 import React from "react";
 import { Hunk, Change } from "gitdiff-parser";
 import { DiffChange } from "./DiffChange";
+import { DiffType } from "./DiffFile";
 import * as Diff from "diff";
 
 type ZipChange = [Change[], Change | null, number];
@@ -31,7 +32,7 @@ export const zipChanges = (changes: Change[]) => {
   return result;
 };
 
-export const splitChanges = (changes: Change[]) => {
+export const splitChanges = (changes: Change[], diffType: DiffType) => {
   const result: ZipSplitChange[] = [];
   changes.forEach((change, idx) => {
     if (change.isNormal) {
@@ -45,7 +46,11 @@ export const splitChanges = (changes: Change[]) => {
         const oldString = changes.old?.content || "";
         const newString = changes.new?.content || "";
         if (oldString.length <= 256 || newString.length <= 256) {
-          changes.diff = Diff.diffChars(oldString, newString);
+          if (diffType === "Letter") {
+            changes.diff = Diff.diffChars(oldString, newString);
+          } else {
+            changes.diff = Diff.diffWords(oldString, newString);
+          }
         }
       } else {
         result.push({ type: "insert", old: null, new: change });
@@ -60,21 +65,22 @@ export const splitChanges = (changes: Change[]) => {
   });
 };
 
-export const hunkToDiff = (hunk: Hunk) => {
-  return splitChanges(zipChanges(hunk.changes));
+export const hunkToDiff = (hunk: Hunk, diffType: DiffType) => {
+  return splitChanges(zipChanges(hunk.changes), diffType);
 };
 
 export type DiffHunkProps = {
   hunk: Hunk;
+  diffType: DiffType;
 };
 
 export function DiffHunk(props: DiffHunkProps) {
-  const { hunk } = props;
+  const { hunk, diffType } = props;
   const [changes, setChanges] = React.useState<ZipSplitChange[]>([]);
 
   React.useEffect(() => {
-    setChanges(splitChanges(zipChanges(hunk.changes)));
-  }, [hunk.changes]);
+    setChanges(splitChanges(zipChanges(hunk.changes), diffType));
+  }, [hunk.changes, diffType]);
 
   return (
     <>
